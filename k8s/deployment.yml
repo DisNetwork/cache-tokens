@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: cache-tokens
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: cache-tokens
+    spec:
+      containers:
+      - name: cache-tokens
+        image: gcr.io/disnetwork/cache-tokens
+        ports:
+        - containerPort: 2030

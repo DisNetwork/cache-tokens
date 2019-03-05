@@ -16,7 +16,7 @@ const manager: CacheManager = new CacheManager(
     middleware,
 );
 
-// Setup the bot route
+// Handle the bot token request
 app.get('/bot', async (req: Request, res: Response) => {
     const botId = req.body.id;
     const cachedToken: ICacheToken | undefined = await manager.get(botId);
