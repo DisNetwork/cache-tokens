@@ -7,4 +7,3 @@ const app: express.Application = express();
 app.listen(2030, () => {
     console.log('Listening to port 2030...');
 });
-

@@ -4,10 +4,10 @@
  */
 export class CacheManager {
     private readonly TIMEOUT: number = (2 * 60) * 1000; // 2 mins
-    private cache: Map<string, CacheToken>;
+    private cache: Map<string, ICacheToken>;
 
     constructor(
-        private middleware: CacheMiddleware
+        private middleware: ICacheMiddleware,
     ) {
         this.cache = new Map();
         this.update();
@@ -17,19 +17,19 @@ export class CacheManager {
      * Add token to the cache
      * @param token Token that will be cached
      */
-    public add(token: CacheToken) {
+    public add(token: ICacheToken) {
         this.cache.set(token.botId, token);
-        console.log('[Cache] Add: ', token.botId);
+        console.log('Caching bot/', token.botId, '...');
     }
 
     /**
      * Remove the token from the cache
      * @param token Token that will be removed from the cache
      */
-    public remove(token: CacheToken) {
+    public remove(token: ICacheToken) {
         if (this.cache.has(token.botId)) {
             this.cache.delete(token.botId);
-            console.log('[Cache] Remove: ', token.botId);
+            console.log('Removing bot/', token.botId, '...');
         }
     }
 
@@ -37,9 +37,9 @@ export class CacheManager {
      * Get the token by the id of the bot from the cache
      * @param botId Id of the bot
      */
-    public async get(botId: string): Promise<CacheToken | undefined> {
-        return new Promise<CacheToken | undefined>(async (resolve: any) => {
-            let cachedToken: CacheToken | undefined = this.cache.get(botId);
+    public async get(botId: string): Promise<ICacheToken | undefined> {
+        return new Promise<ICacheToken | undefined>(async (resolve: any) => {
+            let cachedToken: ICacheToken | undefined = this.cache.get(botId);
             if (cachedToken === undefined) {
                 cachedToken = await this.middleware.fetch(botId);
                 if (cachedToken === undefined) {
@@ -58,7 +58,7 @@ export class CacheManager {
      */
     private update(): void {
         for (const botId in this.cache.keys()) {
-            const cachedToken: CacheToken | undefined = this.cache.get(botId);
+            const cachedToken: ICacheToken | undefined = this.cache.get(botId);
             if (cachedToken === undefined) {
                 continue;
             }
@@ -77,15 +77,15 @@ export class CacheManager {
  * The middleware is useful. When, the token not found.
  * And, we need to fetch it from the database or any way else.
  */
-export interface CacheMiddleware {
-    fetch(botId: string): Promise<CacheToken | undefined>;
+export interface ICacheMiddleware {
+    fetch(botId: string): Promise<ICacheToken | undefined>;
 }
 
 /*
  * Data of the token that we need to cache.
  * And, know what to do with it.
  */
-export interface CacheToken {
+export interface ICacheToken {
     botId: string;
     token: string;
     lifetime: number;

@@ -1,28 +1,28 @@
 import { Firestore, DocumentReference, DocumentSnapshot } from '@google-cloud/firestore';
-import { CacheMiddleware, CacheToken } from "./cache";
+import { ICacheMiddleware, ICacheToken } from "./cache";
 
 /**
  * Middleware that fetches the bot data from the Firestore database
  */
-export class FirestoreMiddleware implements CacheMiddleware {
+export class FirestoreMiddleware implements ICacheMiddleware {
     private firestore: Firestore;
 
     /**
      * Setup the firestore database
      */
-    constructor (
-        private path: string
+    constructor(
+        private path: string,
     ) {
         this.firestore = new Firestore({
-            keyFilename: this.path
+            keyFilename: this.path,
         });
     }
 
     /**
      * Fetches the bot data from the Firestore database.
      */
-    public fetch(botId: string): Promise<CacheToken | undefined> {
-        return new Promise<CacheToken | undefined>(async (resolve: Function) => {
+    public fetch(botId: string): Promise<ICacheToken | undefined> {
+        return new Promise<ICacheToken | undefined>(async (resolve: (token: ICacheToken | undefined) => void) => {
             const doc: DocumentReference = this.firestore.collection('bot').doc(botId);
             const snapshot: DocumentSnapshot = await doc.get();
             if (!snapshot.exists) {
@@ -30,11 +30,12 @@ export class FirestoreMiddleware implements CacheMiddleware {
                 return;
             }
             const data: any = snapshot.data();
-            const token: CacheToken = {
+            const token: ICacheToken = {
                 botId: botId,
                 lifetime: 0,
-                token: data.token
+                token: data.token,
             };
+            console.log('Fetch bot/', botId, '...');
             resolve(token);
         });
     }
