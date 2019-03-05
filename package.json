@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/DisNetwork/cache-tokens#readme",
   "dependencies": {
+    "@google-cloud/firestore": "^1.0.1",
     "express": "^4.16.4"
   },
   "devDependencies": {
