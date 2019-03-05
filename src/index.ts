@@ -2,9 +2,14 @@ import express, { Request, Response } from 'express';
 import { FirestoreMiddleware } from './middlware';
 import { resolve } from 'path';
 import { CacheManager, ICacheToken } from './cache';
+import { urlencoded, json } from 'body-parser';
 
 // Create the express application
 const app: express.Application = express();
+
+// Setup body middlewares
+app.use(urlencoded({ extended: true }));
+app.use(json());
 
 // Setup the firestore
 const middleware: FirestoreMiddleware = new FirestoreMiddleware(
